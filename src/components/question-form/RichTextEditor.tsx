@@ -1,5 +1,6 @@
 
-import { Editor } from '@tinymce/tinymce-react';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 interface RichTextEditorProps {
   value: string;
@@ -9,24 +10,32 @@ interface RichTextEditorProps {
 const RichTextEditor = ({ value, onChange }: RichTextEditorProps) => {
   return (
     <div className="min-h-[300px] border border-neutral-light rounded-lg overflow-hidden">
-      <Editor
-        apiKey="your-tiny-api-key" // You'll need to get a free API key from TinyMCE
-        value={value}
-        onEditorChange={(content) => onChange(content)}
-        init={{
-          height: 300,
-          menubar: false,
-          plugins: [
-            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-            'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+      <CKEditor
+        editor={ClassicEditor}
+        data={value}
+        onChange={(event, editor) => {
+          const data = editor.getData();
+          onChange(data);
+        }}
+        config={{
+          toolbar: [
+            'heading',
+            '|',
+            'bold',
+            'italic',
+            'link',
+            'bulletedList',
+            'numberedList',
+            '|',
+            'outdent',
+            'indent',
+            '|',
+            'blockQuote',
+            'insertTable',
+            'undo',
+            'redo'
           ],
-          toolbar: 'undo redo | blocks | ' +
-            'bold italic forecolor | alignleft aligncenter ' +
-            'alignright alignjustify | bullist numlist outdent indent | ' +
-            'removeformat | code | help',
-          content_style: 'body { font-family:Inter,Arial,sans-serif; font-size:14px }',
-          skin: 'oxide',
+          placeholder: 'Type your answer here...',
         }}
       />
     </div>
