@@ -24,7 +24,7 @@ const Navbar = () => {
           </div>
 
           <div className="flex-1 text-center hidden md:block">
-            <span className="text-lg font-medium text-neutral-darker">Master Your Web Development Interview</span>
+            <span className="text-xl font-medium text-neutral-darker">Master Your Web Development Interview</span>
           </div>
 
           <div className="flex-1 flex justify-end">
