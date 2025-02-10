@@ -4,7 +4,7 @@ import { X } from 'lucide-react';
 import { FormData } from '@/types/question';
 import CategorySelector from './question-form/CategorySelector';
 import FormField from './question-form/FormField';
-import MonacoEditor from './question-form/MonacoEditor';
+import RichTextEditor from './question-form/RichTextEditor';
 
 interface QuestionFormProps {
   initialData?: FormData;
@@ -71,7 +71,7 @@ const QuestionForm = ({ initialData, categories, onSubmit, onClose }: QuestionFo
         </FormField>
 
         <FormField label="Answer">
-          <MonacoEditor
+          <RichTextEditor
             value={formData.answer}
             onChange={(value) => setFormData({ ...formData, answer: value })}
           />
