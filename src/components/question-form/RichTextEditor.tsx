@@ -1,6 +1,5 @@
 
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { useState } from 'react';
 
 interface RichTextEditorProps {
   value: string;
@@ -8,47 +7,30 @@ interface RichTextEditorProps {
 }
 
 const RichTextEditor = ({ value, onChange }: RichTextEditorProps) => {
+  const [isAddingCode, setIsAddingCode] = useState(false);
+
+  const handleAddCodeBlock = () => {
+    const codeTemplate = "\n```javascript\n// Your code here\n```\n";
+    onChange(value + codeTemplate);
+    setIsAddingCode(false);
+  };
+
   return (
-    <div className="min-h-[300px] border border-neutral-light rounded-lg overflow-hidden">
-      <CKEditor
-        editor={ClassicEditor}
-        data={value}
-        onChange={(event, editor) => {
-          const data = editor.getData();
-          onChange(data);
-        }}
-        config={{
-          toolbar: [
-            'heading',
-            '|',
-            'bold',
-            'italic',
-            'link',
-            'code',
-            'codeBlock',
-            '|',
-            'bulletedList',
-            'numberedList',
-            '|',
-            'outdent',
-            'indent',
-            '|',
-            'blockQuote',
-            'insertTable',
-            'undo',
-            'redo'
-          ],
-          placeholder: "Type your answer here...",
-          codeBlock: {
-            languages: [
-              { language: 'plaintext', label: 'Plain text' },
-              { language: 'javascript', label: 'JavaScript' },
-              { language: 'typescript', label: 'TypeScript' },
-              { language: 'css', label: 'CSS' },
-              { language: 'html', label: 'HTML' },
-            ]
-          }
-        }}
+    <div className="space-y-2">
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={handleAddCodeBlock}
+          className="px-3 py-1 text-sm bg-neutral-light hover:bg-neutral-light/80 rounded-md transition-colors"
+        >
+          Add Code Block
+        </button>
+      </div>
+      <textarea
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-full min-h-[300px] px-3 py-2 border border-neutral-light rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+        placeholder="Type your answer here... Use the 'Add Code Block' button to insert code snippets."
       />
     </div>
   );
