@@ -41,17 +41,19 @@ const Index = () => {
       return data.map(q => ({
         id: q.id,
         title: q.title,
-        description: q.title, // Using title as description for now
+        description: q.title, // Note: We should use a proper description field in the database
         answer: q.answer,
-        category: q.tags[0], // Using first tag as category
+        category: q.tags?.[0] || 'General', // Using first tag as category, fallback to 'General'
         difficulty: q.difficulty as 'Easy' | 'Medium' | 'Hard'
       }));
     }
   });
 
   const filteredQuestions = questions?.filter(question => {
-    const matchesSearch = question.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         question.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = 
+      question.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      question.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      question.answer.toLowerCase().includes(searchQuery.toLowerCase()); // Also search in answers
     const matchesCategory = selectedCategory ? question.category === selectedCategory : true;
     return matchesSearch && matchesCategory;
   }) || [];
