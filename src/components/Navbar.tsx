@@ -12,8 +12,8 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           <div className="flex-shrink-0">
             <Link to="/" className="flex flex-col items-start">
-              <span className="font-display text-2xl font-bold bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">
-                React<span className="text-neutral-darker">Prep</span>
+              <span className="font-display text-xl font-bold bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">
+                Master Your Web Development Interview
               </span>
               <span className="text-xs text-neutral-dark font-medium self-end">-Preparation Guide-</span>
             </Link>
