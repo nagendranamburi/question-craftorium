@@ -17,8 +17,8 @@ const Navbar = () => {
                 alt="ReactPrep Logo" 
                 className="h-12 w-auto object-contain" 
                 style={{
-                  filter: 'contrast(1.1) brightness(1.05)',
-                  mixBlendMode: 'multiply'
+                  filter: 'contrast(1.2) brightness(0.9)',
+                  mixBlendMode: 'darken'
                 }}
               />
             </Link>
@@ -80,4 +80,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
