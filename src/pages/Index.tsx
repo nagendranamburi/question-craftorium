@@ -7,6 +7,22 @@ import { supabase } from '@/integrations/supabase/client';
 
 const categories = [
   {
+    name: 'JavaScript',
+    count: 2,
+    icon: '🟨',
+    color: 'bg-yellow-100',
+    textColor: 'text-yellow-800',
+    borderColor: 'border-yellow-200'
+  },
+  {
+    name: 'TypeScript',
+    count: 1,
+    icon: '🔷',
+    color: 'bg-blue-100',
+    textColor: 'text-blue-800',
+    borderColor: 'border-blue-200'
+  },
+  {
     name: 'React',
     count: 4,
     icon: '⚛️',
@@ -15,36 +31,36 @@ const categories = [
     borderColor: 'border-cyan-200'
   },
   {
-    name: 'Virtual DOM',
+    name: 'Redux',
     count: 1,
-    icon: '🌳',
-    color: 'bg-green-100',
-    textColor: 'text-green-800',
-    borderColor: 'border-green-200'
+    icon: '🔄',
+    color: 'bg-purple-100',
+    textColor: 'text-purple-800',
+    borderColor: 'border-purple-200'
   },
   {
-    name: 'Props',
+    name: 'Next.js',
     count: 1,
-    icon: '📦',
+    icon: '▲',
+    color: 'bg-neutral-100',
+    textColor: 'text-neutral-800',
+    borderColor: 'border-neutral-200'
+  },
+  {
+    name: 'HTML',
+    count: 1,
+    icon: '🌐',
     color: 'bg-orange-100',
     textColor: 'text-orange-800',
     borderColor: 'border-orange-200'
   },
   {
-    name: 'Context',
+    name: 'CSS',
     count: 1,
-    icon: '🌐',
-    color: 'bg-blue-100',
-    textColor: 'text-blue-800',
-    borderColor: 'border-blue-200'
-  },
-  {
-    name: 'Hooks',
-    count: 2,
-    icon: '🎣',
-    color: 'bg-purple-100',
-    textColor: 'text-purple-800',
-    borderColor: 'border-purple-200'
+    icon: '🎨',
+    color: 'bg-pink-100',
+    textColor: 'text-pink-800',
+    borderColor: 'border-pink-200'
   }
 ];
 
@@ -87,10 +103,10 @@ const Index = () => {
           {/* Hero Section */}
           <div className="text-center mb-16">
             <h1 className="text-4xl md:text-5xl font-display font-bold text-neutral-darker mb-4">
-              Master Your React Interview
+              Master Your Web Development Interview
             </h1>
             <p className="text-lg text-neutral-dark max-w-2xl mx-auto">
-              Prepare with our curated collection of React interview questions and expert answers
+              Prepare with our curated collection of web development interview questions and expert answers
             </p>
             
             {/* Search Bar */}
@@ -109,7 +125,7 @@ const Index = () => {
           </div>
 
           {/* Category Tiles */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-12">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-12">
             {categories.map((category) => (
               <button
                 key={category.name}
