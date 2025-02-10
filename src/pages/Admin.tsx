@@ -1,16 +1,10 @@
 
 import { useState } from 'react';
-import { Plus, Edit2, Trash2, X, Code2, Type, Bold, Italic } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useToast } from "@/components/ui/use-toast";
-
-interface Question {
-  id: string;
-  title: string;
-  description: string;
-  answer: string;
-  category: string;
-  difficulty: 'Easy' | 'Medium' | 'Hard';
-}
+import QuestionForm from '@/components/QuestionForm';
+import QuestionsTable from '@/components/QuestionsTable';
+import { Question, FormData } from '@/types/question';
 
 const Admin = () => {
   const { toast } = useToast();
@@ -27,32 +21,11 @@ const Admin = () => {
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
-  const [newCategory, setNewCategory] = useState('');
-  
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    answer: '',
-    category: '',
-    difficulty: 'Easy' as 'Easy' | 'Medium' | 'Hard'
-  });
 
   const categories = Array.from(new Set([
     'JavaScript', 'React', 'HTML', 'CSS', 'Redux', 'TypeScript',
     ...questions.map(q => q.category)
   ]));
-
-  const resetForm = () => {
-    setFormData({
-      title: '',
-      description: '',
-      answer: '',
-      category: '',
-      difficulty: 'Easy'
-    });
-    setEditingQuestion(null);
-    setIsFormOpen(false);
-  };
 
   const handleDelete = (id: string) => {
     setQuestions(questions.filter(q => q.id !== id));
@@ -64,19 +37,10 @@ const Admin = () => {
 
   const handleEdit = (question: Question) => {
     setEditingQuestion(question);
-    setFormData({
-      title: question.title,
-      description: question.description,
-      answer: question.answer,
-      category: question.category,
-      difficulty: question.difficulty
-    });
     setIsFormOpen(true);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  const handleSubmit = (formData: FormData) => {
     if (editingQuestion) {
       // Update existing question
       setQuestions(questions.map(q => 
@@ -101,48 +65,8 @@ const Admin = () => {
       });
     }
     
-    resetForm();
-  };
-
-  const handleAddCategory = () => {
-    if (newCategory && !categories.includes(newCategory)) {
-      setFormData({ ...formData, category: newCategory });
-      setNewCategory('');
-    }
-  };
-
-  const insertText = (tag: string) => {
-    const textArea = document.getElementById('answer-textarea') as HTMLTextAreaElement;
-    if (!textArea) return;
-
-    const start = textArea.selectionStart;
-    const end = textArea.selectionEnd;
-    const text = textArea.value;
-    let insertion = '';
-
-    switch(tag) {
-      case 'code':
-        insertion = '\n```\n// your code here\n```\n';
-        break;
-      case 'bold':
-        insertion = '**selected text**';
-        break;
-      case 'italic':
-        insertion = '_selected text_';
-        break;
-      default:
-        return;
-    }
-
-    const newText = text.substring(0, start) + insertion + text.substring(end);
-    setFormData({ ...formData, answer: newText });
-
-    // Set cursor position after the insertion
-    setTimeout(() => {
-      textArea.focus();
-      const newCursorPos = start + insertion.length;
-      textArea.setSelectionRange(newCursorPos, newCursorPos);
-    }, 0);
+    setEditingQuestion(null);
+    setIsFormOpen(false);
   };
 
   return (
@@ -162,210 +86,29 @@ const Admin = () => {
             </button>
           </div>
 
-          {/* Question Form */}
           {isFormOpen && (
-            <div className="mb-8 p-6 border border-neutral-light rounded-lg">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold">
-                  {editingQuestion ? 'Edit Question' : 'Add New Question'}
-                </h2>
-                <button
-                  onClick={resetForm}
-                  className="text-neutral-dark hover:text-neutral-darker"
-                >
-                  <X size={24} />
-                </button>
-              </div>
-              
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-neutral-darker mb-1">
-                    Title
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.title}
-                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    className="w-full px-3 py-2 border border-neutral-light rounded-lg"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-neutral-darker mb-1">
-                    Description
-                  </label>
-                  <textarea
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    className="w-full px-3 py-2 border border-neutral-light rounded-lg"
-                    rows={3}
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-neutral-darker mb-1">
-                    Answer
-                  </label>
-                  <div className="flex gap-2 mb-2">
-                    <button
-                      type="button"
-                      onClick={() => insertText('code')}
-                      className="inline-flex items-center px-3 py-1.5 rounded bg-neutral-light/50 text-neutral-darker hover:bg-neutral-light"
-                      title="Insert code block"
-                    >
-                      <Code2 size={16} className="mr-1" />
-                      Code
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => insertText('bold')}
-                      className="inline-flex items-center px-3 py-1.5 rounded bg-neutral-light/50 text-neutral-darker hover:bg-neutral-light"
-                      title="Make text bold"
-                    >
-                      <Bold size={16} className="mr-1" />
-                      Bold
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => insertText('italic')}
-                      className="inline-flex items-center px-3 py-1.5 rounded bg-neutral-light/50 text-neutral-darker hover:bg-neutral-light"
-                      title="Make text italic"
-                    >
-                      <Italic size={16} className="mr-1" />
-                      Italic
-                    </button>
-                  </div>
-                  <textarea
-                    id="answer-textarea"
-                    value={formData.answer}
-                    onChange={(e) => setFormData({ ...formData, answer: e.target.value })}
-                    className="w-full px-3 py-2 border border-neutral-light rounded-lg font-mono"
-                    rows={6}
-                    placeholder="Write your answer here. Use formatting buttons above or manually:
-- ```code``` for code blocks
-- **text** for bold
-- _text_ for italic"
-                    required
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-neutral-darker mb-1">
-                      Category
-                    </label>
-                    <div className="flex gap-2">
-                      <select
-                        value={formData.category}
-                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                        className="flex-1 px-3 py-2 border border-neutral-light rounded-lg"
-                        required
-                      >
-                        <option value="">Select category</option>
-                        {categories.map((cat) => (
-                          <option key={cat} value={cat}>
-                            {cat}
-                          </option>
-                        ))}
-                      </select>
-                      <input
-                        type="text"
-                        value={newCategory}
-                        onChange={(e) => setNewCategory(e.target.value)}
-                        placeholder="New category"
-                        className="flex-1 px-3 py-2 border border-neutral-light rounded-lg"
-                      />
-                      <button
-                        type="button"
-                        onClick={handleAddCategory}
-                        className="px-4 py-2 bg-neutral-light text-neutral-darker rounded-lg hover:bg-neutral-light/80"
-                      >
-                        Add
-                      </button>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-neutral-darker mb-1">
-                      Difficulty
-                    </label>
-                    <select
-                      value={formData.difficulty}
-                      onChange={(e) => setFormData({ ...formData, difficulty: e.target.value as 'Easy' | 'Medium' | 'Hard' })}
-                      className="w-full px-3 py-2 border border-neutral-light rounded-lg"
-                      required
-                    >
-                      <option value="Easy">Easy</option>
-                      <option value="Medium">Medium</option>
-                      <option value="Hard">Hard</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="flex justify-end pt-4">
-                  <button
-                    type="submit"
-                    className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark"
-                  >
-                    {editingQuestion ? 'Update Question' : 'Add Question'}
-                  </button>
-                </div>
-              </form>
-            </div>
+            <QuestionForm
+              initialData={editingQuestion ? {
+                title: editingQuestion.title,
+                description: editingQuestion.description,
+                answer: editingQuestion.answer,
+                category: editingQuestion.category,
+                difficulty: editingQuestion.difficulty
+              } : undefined}
+              categories={categories}
+              onSubmit={handleSubmit}
+              onClose={() => {
+                setIsFormOpen(false);
+                setEditingQuestion(null);
+              }}
+            />
           )}
 
-          {/* Questions Table */}
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-neutral-light">
-                  <th className="py-3 px-4 text-left text-sm font-semibold text-neutral-dark">Title</th>
-                  <th className="py-3 px-4 text-left text-sm font-semibold text-neutral-dark">Category</th>
-                  <th className="py-3 px-4 text-left text-sm font-semibold text-neutral-dark">Difficulty</th>
-                  <th className="py-3 px-4 text-right text-sm font-semibold text-neutral-dark">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {questions.map((question) => (
-                  <tr key={question.id} className="border-b border-neutral-light">
-                    <td className="py-4 px-4 text-neutral-darker">{question.title}</td>
-                    <td className="py-4 px-4">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
-                        {question.category}
-                      </span>
-                    </td>
-                    <td className="py-4 px-4">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        {
-                          Easy: 'bg-green-100 text-green-800',
-                          Medium: 'bg-yellow-100 text-yellow-800',
-                          Hard: 'bg-red-100 text-red-800',
-                        }[question.difficulty]
-                      }`}>
-                        {question.difficulty}
-                      </span>
-                    </td>
-                    <td className="py-4 px-4 text-right">
-                      <button
-                        onClick={() => handleEdit(question)}
-                        className="text-neutral-dark hover:text-primary transition-colors mr-3"
-                      >
-                        <Edit2 size={18} />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(question.id)}
-                        className="text-neutral-dark hover:text-red-500 transition-colors"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <QuestionsTable
+            questions={questions}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
         </div>
       </div>
     </div>
@@ -373,4 +116,3 @@ const Admin = () => {
 };
 
 export default Admin;
-
