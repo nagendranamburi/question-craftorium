@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Atom } from 'lucide-react';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -12,10 +12,14 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           <div className="flex-1 flex justify-center">
             <Link to="/" className="flex flex-col items-center">
-              <span className="font-display text-xl font-bold bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">
-                ReactPrep
-              </span>
-              <span className="text-xs text-neutral-dark font-medium">-Preparation Guide-</span>
+              <div className="flex items-center gap-2">
+                <Atom className="w-6 h-6 text-primary animate-spin-slow" />
+                <span className="font-display text-xl font-bold">
+                  <span className="text-primary">React</span>
+                  <span className="text-neutral-darker">Prep</span>
+                </span>
+              </div>
+              <span className="text-xs text-neutral-dark font-medium">- A Preparation Guide -</span>
             </Link>
           </div>
 
