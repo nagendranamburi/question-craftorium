@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Plus, Edit2, Trash2, X } from 'lucide-react';
+import { Plus, Edit2, Trash2, X, Code2, Type, Bold, Italic } from 'lucide-react';
 import { useToast } from "@/components/ui/use-toast";
 
 interface Question {
@@ -111,6 +111,40 @@ const Admin = () => {
     }
   };
 
+  const insertText = (tag: string) => {
+    const textArea = document.getElementById('answer-textarea') as HTMLTextAreaElement;
+    if (!textArea) return;
+
+    const start = textArea.selectionStart;
+    const end = textArea.selectionEnd;
+    const text = textArea.value;
+    let insertion = '';
+
+    switch(tag) {
+      case 'code':
+        insertion = '\n```\n// your code here\n```\n';
+        break;
+      case 'bold':
+        insertion = '**selected text**';
+        break;
+      case 'italic':
+        insertion = '_selected text_';
+        break;
+      default:
+        return;
+    }
+
+    const newText = text.substring(0, start) + insertion + text.substring(end);
+    setFormData({ ...formData, answer: newText });
+
+    // Set cursor position after the insertion
+    setTimeout(() => {
+      textArea.focus();
+      const newCursorPos = start + insertion.length;
+      textArea.setSelectionRange(newCursorPos, newCursorPos);
+    }, 0);
+  };
+
   return (
     <div className="min-h-screen bg-neutral-light/30 pt-24 pb-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -174,12 +208,45 @@ const Admin = () => {
                   <label className="block text-sm font-medium text-neutral-darker mb-1">
                     Answer
                   </label>
+                  <div className="flex gap-2 mb-2">
+                    <button
+                      type="button"
+                      onClick={() => insertText('code')}
+                      className="inline-flex items-center px-3 py-1.5 rounded bg-neutral-light/50 text-neutral-darker hover:bg-neutral-light"
+                      title="Insert code block"
+                    >
+                      <Code2 size={16} className="mr-1" />
+                      Code
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => insertText('bold')}
+                      className="inline-flex items-center px-3 py-1.5 rounded bg-neutral-light/50 text-neutral-darker hover:bg-neutral-light"
+                      title="Make text bold"
+                    >
+                      <Bold size={16} className="mr-1" />
+                      Bold
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => insertText('italic')}
+                      className="inline-flex items-center px-3 py-1.5 rounded bg-neutral-light/50 text-neutral-darker hover:bg-neutral-light"
+                      title="Make text italic"
+                    >
+                      <Italic size={16} className="mr-1" />
+                      Italic
+                    </button>
+                  </div>
                   <textarea
+                    id="answer-textarea"
                     value={formData.answer}
                     onChange={(e) => setFormData({ ...formData, answer: e.target.value })}
                     className="w-full px-3 py-2 border border-neutral-light rounded-lg font-mono"
                     rows={6}
-                    placeholder="Write your answer here. Use ``` for code blocks."
+                    placeholder="Write your answer here. Use formatting buttons above or manually:
+- ```code``` for code blocks
+- **text** for bold
+- _text_ for italic"
                     required
                   />
                 </div>
@@ -306,3 +373,4 @@ const Admin = () => {
 };
 
 export default Admin;
+
