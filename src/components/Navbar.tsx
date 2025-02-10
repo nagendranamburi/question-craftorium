@@ -18,18 +18,6 @@ const Navbar = () => {
               <span className="text-xs text-neutral-dark font-medium self-end">-Preparation Guide-</span>
             </Link>
           </div>
-          
-          <div className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="text-neutral-dark hover:text-primary transition-colors font-semibold text-lg">
-              Home
-            </Link>
-            <Link to="/questions" className="text-neutral-dark hover:text-primary transition-colors font-semibold text-lg">
-              Questions
-            </Link>
-            <Link to="/admin" className="text-neutral-dark hover:text-primary transition-colors font-semibold text-lg">
-              Admin
-            </Link>
-          </div>
 
           <div className="md:hidden">
             <button
