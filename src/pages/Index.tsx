@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Search } from 'lucide-react';
 import QuestionCard from '../components/QuestionCard';
@@ -32,12 +31,8 @@ const Index = () => {
       // Then get question counts for each category
       const { data: counts, error: countsError } = await supabase
         .from('questions')
-        .select('category_id')
-        .select(`
-          category_id,
-          count
-        `)
-        .count('category_id');
+        .select('category_id', { count: 'exact' })
+        .groupBy('category_id');
 
       if (countsError) throw countsError;
 
@@ -45,7 +40,7 @@ const Index = () => {
       const categoriesWithCounts = categoriesData.map(category => ({
         ...category,
         _count: {
-          questions: counts.find(c => c.category_id === category.id)?.count || 0
+          questions: counts.filter(c => c.category_id === category.id).length
         }
       }));
 
