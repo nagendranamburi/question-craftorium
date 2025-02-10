@@ -15,7 +15,7 @@ const Navbar = () => {
               <img 
                 src="/lovable-uploads/6622cfce-5249-418b-8f9d-557d3b82ec2c.png" 
                 alt="ReactPrep Logo" 
-                className="h-14 w-auto" // Increased height from h-12 to h-14
+                className="h-16 w-auto" // Increased height from h-14 to h-16
               />
             </Link>
           </div>
