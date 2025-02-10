@@ -15,19 +15,19 @@ const Navbar = () => {
               <img 
                 src="/lovable-uploads/6622cfce-5249-418b-8f9d-557d3b82ec2c.png" 
                 alt="ReactPrep Logo" 
-                className="h-16 w-auto" // Increased height from h-14 to h-16
+                className="h-20 w-auto" // Increased height from h-16 to h-20
               />
             </Link>
           </div>
           
           <div className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="text-neutral-dark hover:text-primary transition-colors">
+            <Link to="/" className="text-neutral-dark hover:text-primary transition-colors font-semibold text-lg">
               Home
             </Link>
-            <Link to="/questions" className="text-neutral-dark hover:text-primary transition-colors">
+            <Link to="/questions" className="text-neutral-dark hover:text-primary transition-colors font-semibold text-lg">
               Questions
             </Link>
-            <Link to="/admin" className="text-neutral-dark hover:text-primary transition-colors">
+            <Link to="/admin" className="text-neutral-dark hover:text-primary transition-colors font-semibold text-lg">
               Admin
             </Link>
           </div>
@@ -49,21 +49,21 @@ const Navbar = () => {
           <div className="px-2 pt-2 pb-3 space-y-1">
             <Link
               to="/"
-              className="block px-3 py-2 rounded-md text-neutral-dark hover:text-primary transition-colors"
+              className="block px-3 py-2 rounded-md text-neutral-dark hover:text-primary transition-colors font-semibold"
               onClick={() => setIsMenuOpen(false)}
             >
               Home
             </Link>
             <Link
               to="/questions"
-              className="block px-3 py-2 rounded-md text-neutral-dark hover:text-primary transition-colors"
+              className="block px-3 py-2 rounded-md text-neutral-dark hover:text-primary transition-colors font-semibold"
               onClick={() => setIsMenuOpen(false)}
             >
               Questions
             </Link>
             <Link
               to="/admin"
-              className="block px-3 py-2 rounded-md text-neutral-dark hover:text-primary transition-colors"
+              className="block px-3 py-2 rounded-md text-neutral-dark hover:text-primary transition-colors font-semibold"
               onClick={() => setIsMenuOpen(false)}
             >
               Admin
