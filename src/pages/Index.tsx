@@ -126,11 +126,13 @@ const Index = () => {
                       selectedCategory === category.name ? 'ring-2 ring-primary' : ''
                     }`}
                   >
-                    <img 
-                      src={category.logo_url} 
-                      alt={`${category.name} logo`} 
-                      className="w-12 h-12 mb-2 mx-auto"
-                    />
+                    {category.logo_url && (
+                      <img 
+                        src={category.logo_url} 
+                        alt={`${category.name} logo`}
+                        className="w-12 h-12 mb-2 mx-auto object-contain"
+                      />
+                    )}
                     <h3 className="font-semibold mb-1">{category.name}</h3>
                     <p className="text-sm opacity-75">{questionCount} questions</p>
                   </button>
