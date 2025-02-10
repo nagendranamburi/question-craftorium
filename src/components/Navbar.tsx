@@ -23,13 +23,19 @@ const Navbar = () => {
             </Link>
           </div>
 
-          <div className="md:hidden">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 rounded-md text-neutral-dark hover:text-primary transition-colors"
-            >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+          <div className="flex-1 text-center hidden md:block">
+            <span className="text-lg font-medium text-neutral-darker">Master Your Web Development Interview</span>
+          </div>
+
+          <div className="flex-1 flex justify-end">
+            <div className="md:hidden">
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="p-2 rounded-md text-neutral-dark hover:text-primary transition-colors"
+              >
+                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -38,6 +44,9 @@ const Navbar = () => {
       {isMenuOpen && (
         <div className="md:hidden bg-white border-b border-neutral-light animate-fadeIn">
           <div className="px-2 pt-2 pb-3 space-y-1">
+            <div className="block px-3 py-2 text-center text-neutral-darker">
+              Master Your Web Development Interview
+            </div>
             <Link
               to="/"
               className="block px-3 py-2 rounded-md text-neutral-dark hover:text-primary transition-colors font-semibold"
