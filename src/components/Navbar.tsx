@@ -11,11 +11,15 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex-shrink-0">
-            <Link to="/" className="flex items-center gap-2">
+            <Link to="/" className="flex items-center">
               <img 
                 src="/lovable-uploads/6622cfce-5249-418b-8f9d-557d3b82ec2c.png" 
                 alt="ReactPrep Logo" 
-                className="h-20 w-auto" // Increased height from h-16 to h-20
+                className="h-12 w-auto object-contain" 
+                style={{
+                  filter: 'contrast(1.1) brightness(1.05)',
+                  mixBlendMode: 'multiply'
+                }}
               />
             </Link>
           </div>
@@ -76,3 +80,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
