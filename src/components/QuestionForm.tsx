@@ -1,7 +1,10 @@
 
 import { useState } from 'react';
-import { X, Code2, Bold, Italic } from 'lucide-react';
+import { X } from 'lucide-react';
 import { FormData } from '@/types/question';
+import FormattingToolbar from './question-form/FormattingToolbar';
+import CategorySelector from './question-form/CategorySelector';
+import FormField from './question-form/FormField';
 
 interface QuestionFormProps {
   initialData?: FormData;
@@ -80,10 +83,7 @@ const QuestionForm = ({ initialData, categories, onSubmit, onClose }: QuestionFo
       </div>
       
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-neutral-darker mb-1">
-            Title
-          </label>
+        <FormField label="Title">
           <input
             type="text"
             value={formData.title}
@@ -91,12 +91,9 @@ const QuestionForm = ({ initialData, categories, onSubmit, onClose }: QuestionFo
             className="w-full px-3 py-2 border border-neutral-light rounded-lg"
             required
           />
-        </div>
+        </FormField>
 
-        <div>
-          <label className="block text-sm font-medium text-neutral-darker mb-1">
-            Description
-          </label>
+        <FormField label="Description">
           <textarea
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -104,41 +101,10 @@ const QuestionForm = ({ initialData, categories, onSubmit, onClose }: QuestionFo
             rows={3}
             required
           />
-        </div>
+        </FormField>
 
-        <div>
-          <label className="block text-sm font-medium text-neutral-darker mb-1">
-            Answer
-          </label>
-          <div className="flex gap-2 mb-2">
-            <button
-              type="button"
-              onClick={() => insertText('code')}
-              className="inline-flex items-center px-3 py-1.5 rounded bg-neutral-dark text-white hover:bg-neutral-darker transition-colors"
-              title="Insert code block"
-            >
-              <Code2 size={16} className="mr-1" />
-              Code
-            </button>
-            <button
-              type="button"
-              onClick={() => insertText('bold')}
-              className="inline-flex items-center px-3 py-1.5 rounded bg-neutral-dark text-white hover:bg-neutral-darker transition-colors"
-              title="Make text bold"
-            >
-              <Bold size={16} className="mr-1" />
-              Bold
-            </button>
-            <button
-              type="button"
-              onClick={() => insertText('italic')}
-              className="inline-flex items-center px-3 py-1.5 rounded bg-neutral-dark text-white hover:bg-neutral-darker transition-colors"
-              title="Make text italic"
-            >
-              <Italic size={16} className="mr-1" />
-              Italic
-            </button>
-          </div>
+        <FormField label="Answer">
+          <FormattingToolbar onInsertText={insertText} />
           <textarea
             id="answer-textarea"
             value={formData.answer}
@@ -151,48 +117,21 @@ const QuestionForm = ({ initialData, categories, onSubmit, onClose }: QuestionFo
 - _text_ for italic"
             required
           />
-        </div>
+        </FormField>
 
         <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-neutral-darker mb-1">
-              Category
-            </label>
-            <div className="flex gap-2">
-              <select
-                value={formData.category}
-                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                className="flex-1 px-3 py-2 border border-neutral-light rounded-lg"
-                required
-              >
-                <option value="">Select category</option>
-                {categories.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
-                  </option>
-                ))}
-              </select>
-              <input
-                type="text"
-                value={newCategory}
-                onChange={(e) => setNewCategory(e.target.value)}
-                placeholder="New category"
-                className="flex-1 px-3 py-2 border border-neutral-light rounded-lg"
-              />
-              <button
-                type="button"
-                onClick={handleAddCategory}
-                className="px-4 py-2 bg-neutral-light text-neutral-darker rounded-lg hover:bg-neutral-light/80"
-              >
-                Add
-              </button>
-            </div>
-          </div>
+          <FormField label="Category">
+            <CategorySelector
+              category={formData.category}
+              categories={categories}
+              newCategory={newCategory}
+              onCategoryChange={(category) => setFormData({ ...formData, category })}
+              onNewCategoryChange={setNewCategory}
+              onAddCategory={handleAddCategory}
+            />
+          </FormField>
 
-          <div>
-            <label className="block text-sm font-medium text-neutral-darker mb-1">
-              Difficulty
-            </label>
+          <FormField label="Difficulty">
             <select
               value={formData.difficulty}
               onChange={(e) => setFormData({ ...formData, difficulty: e.target.value as 'Easy' | 'Medium' | 'Hard' })}
@@ -203,7 +142,7 @@ const QuestionForm = ({ initialData, categories, onSubmit, onClose }: QuestionFo
               <option value="Medium">Medium</option>
               <option value="Hard">Hard</option>
             </select>
-          </div>
+          </FormField>
         </div>
 
         <div className="flex justify-end pt-4">
@@ -220,4 +159,3 @@ const QuestionForm = ({ initialData, categories, onSubmit, onClose }: QuestionFo
 };
 
 export default QuestionForm;
-
