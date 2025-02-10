@@ -24,6 +24,9 @@ const RichTextEditor = ({ value, onChange }: RichTextEditorProps) => {
             'bold',
             'italic',
             'link',
+            'code',
+            'codeBlock',
+            '|',
             'bulletedList',
             'numberedList',
             '|',
@@ -36,6 +39,15 @@ const RichTextEditor = ({ value, onChange }: RichTextEditorProps) => {
             'redo'
           ],
           placeholder: 'Type your answer here...',
+          codeBlock: {
+            languages: [
+              { language: 'plaintext', label: 'Plain text' },
+              { language: 'javascript', label: 'JavaScript' },
+              { language: 'typescript', label: 'TypeScript' },
+              { language: 'css', label: 'CSS' },
+              { language: 'html', label: 'HTML' },
+            ]
+          }
         }}
       />
     </div>
