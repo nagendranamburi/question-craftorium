@@ -27,7 +27,7 @@ const Admin = () => {
       return data.map(q => ({
         id: q.id,
         title: q.title,
-        description: q.title, // Using title as description for now
+        description: q.description,
         answer: q.answer,
         category: q.tags[0], // Using first tag as category
         difficulty: q.difficulty as 'Easy' | 'Medium' | 'Hard',
@@ -79,6 +79,7 @@ const Admin = () => {
           .from('questions')
           .update({
             title: formData.title,
+            description: formData.description,
             tags: [formData.category],
             answer: formData.answer,
             difficulty: formData.difficulty,
@@ -98,6 +99,7 @@ const Admin = () => {
           .from('questions')
           .insert({
             title: formData.title,
+            description: formData.description,
             tags: [formData.category],
             answer: formData.answer,
             difficulty: formData.difficulty,
