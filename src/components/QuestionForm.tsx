@@ -70,7 +70,7 @@ const QuestionForm = ({ initialData, categories, onSubmit, onClose }: QuestionFo
           />
         </FormField>
 
-        <FormField label="Answer" className="prose max-w-none">
+        <FormField label="Answer">
           <MonacoEditor
             value={formData.answer}
             onChange={(value) => setFormData({ ...formData, answer: value })}
