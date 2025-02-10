@@ -38,7 +38,7 @@ const RichTextEditor = ({ value, onChange }: RichTextEditorProps) => {
             'undo',
             'redo'
           ],
-          placeholder: 'Type your answer here...',
+          placeholder: "Type your answer here...",
           codeBlock: {
             languages: [
               { language: 'plaintext', label: 'Plain text' },
