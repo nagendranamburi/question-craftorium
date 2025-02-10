@@ -20,13 +20,14 @@ const QuestionsTable = ({ questions, onEdit, onDelete }: QuestionsTableProps) =>
   };
 
   // Function to format answer with code blocks
-  const formatAnswer = (text: string) => {
+  const formatAnswer = (text: string, codeExample?: string) => {
     if (!text) return [];
     
-    // Split by triple backticks
-    const parts = text.split(/(```[\s\S]*?```)/);
+    const parts = [];
     
-    return parts.map((part, index) => {
+    // First add the main answer with code blocks
+    const answerParts = text.split(/(```[\s\S]*?```)/);
+    parts.push(...answerParts.map((part, index) => {
       // Check if this part is a code block
       if (part.startsWith('```')) {
         // Extract language and code
@@ -35,7 +36,7 @@ const QuestionsTable = ({ questions, onEdit, onDelete }: QuestionsTableProps) =>
         
         const [, language, code] = match;
         return (
-          <pre key={index} className="my-4 p-4 bg-gray-900 rounded-lg overflow-x-auto">
+          <pre key={`answer-${index}`} className="my-4 p-4 bg-gray-900 rounded-lg overflow-x-auto">
             <code className="text-sm text-white font-mono whitespace-pre">
               {code.trim()}
             </code>
@@ -45,12 +46,28 @@ const QuestionsTable = ({ questions, onEdit, onDelete }: QuestionsTableProps) =>
         // Regular text - split by newlines and create paragraphs
         const paragraphs = part.split('\n').filter(p => p.trim());
         return paragraphs.map((paragraph, pIndex) => (
-          <p key={`${index}-${pIndex}`} className="my-2 text-neutral-dark">
+          <p key={`answer-${index}-${pIndex}`} className="my-2 text-neutral-dark">
             {paragraph.trim()}
           </p>
         ));
       }
-    });
+    }));
+
+    // If there's a code example, add it after the answer
+    if (codeExample) {
+      parts.push(
+        <div key="code-example" className="mt-4">
+          <h4 className="font-medium text-neutral-darker mb-2">Code Example:</h4>
+          <pre className="p-4 bg-gray-900 rounded-lg overflow-x-auto">
+            <code className="text-sm text-white font-mono whitespace-pre">
+              {codeExample.trim()}
+            </code>
+          </pre>
+        </div>
+      );
+    }
+    
+    return parts;
   };
 
   return (
@@ -123,7 +140,7 @@ const QuestionsTable = ({ questions, onEdit, onDelete }: QuestionsTableProps) =>
                 <tr>
                   <td colSpan={4} className="px-4 py-4 bg-neutral-light/30">
                     <div className="prose prose-neutral max-w-none">
-                      {formatAnswer(question.answer)}
+                      {formatAnswer(question.answer, question.code_example)}
                     </div>
                   </td>
                 </tr>
