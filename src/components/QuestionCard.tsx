@@ -24,18 +24,31 @@ const QuestionCard = ({ question }: QuestionCardProps) => {
 
   // Function to format answer with code blocks
   const formatAnswer = (text: string) => {
-    const parts = text.split('\n\n');
+    if (!text) return [];
+    
+    // Split by triple backticks to separate code blocks
+    const parts = text.split(/```([\s\S]*?)```/);
+    
     return parts.map((part, index) => {
-      if (part.startsWith('```')) {
-        // Remove the backticks and language identifier if present
-        const code = part.replace(/```(\w+)?/, '').replace(/```$/, '').trim();
+      if (index % 2 === 1) {
+        // This is a code block (between triple backticks)
+        // Remove the language identifier if present
+        const code = part.replace(/^\w+\n/, '').trim();
         return (
-          <pre key={index} className="mt-4 p-4 bg-neutral-darker rounded-lg">
-            <code className="text-sm text-white font-mono whitespace-pre-wrap">{code}</code>
+          <pre key={index} className="my-4 p-4 bg-neutral-darker rounded-lg overflow-x-auto">
+            <code className="text-sm text-white font-mono whitespace-pre">{code}</code>
           </pre>
         );
+      } else {
+        // This is regular text
+        // Split by newlines and create paragraph for each
+        const paragraphs = part.split('\n\n').filter(p => p.trim());
+        return paragraphs.map((paragraph, pIndex) => (
+          <p key={`${index}-${pIndex}`} className="my-2 text-neutral-dark">
+            {paragraph.trim()}
+          </p>
+        ));
       }
-      return <p key={index} className="mt-4">{part}</p>;
     });
   };
 
@@ -78,7 +91,9 @@ const QuestionCard = ({ question }: QuestionCardProps) => {
         
         {isExpanded && (
           <div className="mt-4 p-4 bg-neutral-light/30 rounded-lg animate-fadeIn">
-            <div className="text-neutral-dark">{formatAnswer(question.answer)}</div>
+            <div className="prose prose-neutral max-w-none">
+              {formatAnswer(question.answer)}
+            </div>
           </div>
         )}
       </div>
