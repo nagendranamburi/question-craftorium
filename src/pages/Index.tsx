@@ -2,127 +2,83 @@
 import { useState } from 'react';
 import { Search } from 'lucide-react';
 import QuestionCard from '../components/QuestionCard';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
 const categories = [
   {
-    name: 'JavaScript',
-    count: 2,
-    icon: '⚡',
-    color: 'bg-yellow-100',
-    textColor: 'text-yellow-800',
-    borderColor: 'border-yellow-200'
-  },
-  {
     name: 'React',
-    count: 3,
+    count: 4,
     icon: '⚛️',
     color: 'bg-cyan-100',
     textColor: 'text-cyan-800',
     borderColor: 'border-cyan-200'
   },
   {
-    name: 'HTML',
+    name: 'Virtual DOM',
     count: 1,
-    icon: '🌐',
+    icon: '🌳',
+    color: 'bg-green-100',
+    textColor: 'text-green-800',
+    borderColor: 'border-green-200'
+  },
+  {
+    name: 'Props',
+    count: 1,
+    icon: '📦',
     color: 'bg-orange-100',
     textColor: 'text-orange-800',
     borderColor: 'border-orange-200'
   },
   {
-    name: 'CSS',
+    name: 'Context',
     count: 1,
-    icon: '🎨',
+    icon: '🌐',
     color: 'bg-blue-100',
     textColor: 'text-blue-800',
     borderColor: 'border-blue-200'
   },
   {
-    name: 'Redux',
-    count: 1,
-    icon: '🔄',
+    name: 'Hooks',
+    count: 2,
+    icon: '🎣',
     color: 'bg-purple-100',
     textColor: 'text-purple-800',
     borderColor: 'border-purple-200'
-  },
-  {
-    name: 'TypeScript',
-    count: 1,
-    icon: '📘',
-    color: 'bg-blue-100',
-    textColor: 'text-blue-800',
-    borderColor: 'border-blue-200'
   }
-];
-
-const sampleQuestions = [
-  {
-    id: '1',
-    title: 'What is React?',
-    description: 'Explain what React is and its core principles.',
-    answer: 'React is a JavaScript library for building user interfaces. It uses a component-based architecture and a virtual DOM for efficient rendering. Core principles include:\n\n- Component-based architecture\n- Unidirectional data flow\n- Virtual DOM\n- JSX syntax',
-    category: 'React',
-    difficulty: 'Easy' as const,
-  },
-  {
-    id: '2',
-    title: 'Explain React Hooks',
-    description: 'What are React Hooks and what problems do they solve?',
-    answer: 'React Hooks are functions that allow you to use state and other React features in functional components. They were introduced in React 16.8 to solve several problems:\n\n- Reuse stateful logic between components\n- Reduce complexity of class components\n- Avoid confusion with `this` binding',
-    category: 'React',
-    difficulty: 'Medium' as const,
-  },
-  {
-    id: '3',
-    title: 'What is TypeScript?',
-    description: 'Explain the benefits of using TypeScript over JavaScript.',
-    answer: 'TypeScript is a strongly typed programming language that builds on JavaScript. Key benefits include:\n\n- Static typing\n- Better IDE support\n- Early error detection\n- Enhanced code maintainability\n- Object-oriented features',
-    category: 'TypeScript',
-    difficulty: 'Medium' as const,
-  },
-  {
-    id: '4',
-    title: 'Explain CSS Box Model',
-    description: 'What is the CSS Box Model and its components?',
-    answer: 'The CSS Box Model is a fundamental concept that describes how elements are structured in web layouts. It consists of:\n\n- Content\n- Padding\n- Border\n- Margin\n\nEach element is treated as a box with these layers.',
-    category: 'CSS',
-    difficulty: 'Easy' as const,
-  },
-  {
-    id: '5',
-    title: 'What is Redux?',
-    description: 'Explain Redux and its core principles.',
-    answer: 'Redux is a predictable state container for JavaScript apps. Core principles include:\n\n- Single source of truth\n- State is read-only\n- Changes are made with pure functions\n- Unidirectional data flow',
-    category: 'Redux',
-    difficulty: 'Medium' as const,
-  },
-  {
-    id: '6',
-    title: 'Semantic HTML',
-    description: 'What is semantic HTML and why is it important?',
-    answer: 'Semantic HTML involves using HTML elements that clearly describe their meaning. Benefits include:\n\n- Better accessibility\n- Improved SEO\n- Clearer code structure\n- Easier maintenance',
-    category: 'HTML',
-    difficulty: 'Easy' as const,
-  },
-  {
-    id: '7',
-    title: 'JavaScript Closures',
-    description: 'Explain closures in JavaScript.',
-    answer: 'A closure is the combination of a function and the lexical environment within which that function was declared. Key points:\n\n- Enables data privacy\n- Preserves outer scope access\n- Used for module patterns\n- Creates function factories',
-    category: 'JavaScript',
-    difficulty: 'Medium' as const,
-  },
 ];
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  const filteredQuestions = sampleQuestions.filter(question => {
+  // Fetch questions from Supabase
+  const { data: questions, isLoading } = useQuery({
+    queryKey: ['questions'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('questions')
+        .select('*');
+      
+      if (error) throw error;
+      
+      return data.map(q => ({
+        id: q.id,
+        title: q.title,
+        description: q.title, // Using title as description for now
+        answer: q.answer,
+        category: q.tags[0], // Using first tag as category
+        difficulty: q.difficulty as 'Easy' | 'Medium' | 'Hard'
+      }));
+    }
+  });
+
+  const filteredQuestions = questions?.filter(question => {
     const matchesSearch = question.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          question.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory ? question.category === selectedCategory : true;
     return matchesSearch && matchesCategory;
-  });
+  }) || [];
 
   return (
     <div className="min-h-screen bg-neutral-light/30">
@@ -153,7 +109,7 @@ const Index = () => {
           </div>
 
           {/* Category Tiles */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-12">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-12">
             {categories.map((category) => (
               <button
                 key={category.name}
@@ -184,12 +140,28 @@ const Index = () => {
             </div>
           )}
 
+          {/* Loading State */}
+          {isLoading && (
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+              <p className="mt-4 text-neutral-dark">Loading questions...</p>
+            </div>
+          )}
+
           {/* Questions List */}
-          <div className="space-y-6">
-            {filteredQuestions.map((question) => (
-              <QuestionCard key={question.id} question={question} />
-            ))}
-          </div>
+          {!isLoading && (
+            <div className="space-y-6">
+              {filteredQuestions.map((question) => (
+                <QuestionCard key={question.id} question={question} />
+              ))}
+              
+              {filteredQuestions.length === 0 && (
+                <div className="text-center py-8">
+                  <p className="text-neutral-dark">No questions found matching your criteria.</p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
