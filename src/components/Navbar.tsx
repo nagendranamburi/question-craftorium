@@ -11,10 +11,11 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex-shrink-0">
-            <Link to="/" className="flex items-center">
+            <Link to="/" className="flex flex-col items-start">
               <span className="font-display text-2xl font-bold bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">
                 React<span className="text-neutral-darker">Prep</span>
               </span>
+              <span className="text-xs text-neutral-dark font-medium">Master Your React Interview</span>
             </Link>
           </div>
           
@@ -74,3 +75,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
