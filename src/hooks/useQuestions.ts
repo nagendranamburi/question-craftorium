@@ -28,6 +28,11 @@ export const useQuestions = (selectedCategory: string | null) => {
         difficulty: q.difficulty as 'Easy' | 'Medium' | 'Hard',
         code_example: q.code_example
       }));
-    }
+    },
+    staleTime: 0, // Make the data stale immediately
+    cacheTime: 0, // Don't cache the data
+    refetchOnMount: true, // Refetch when component mounts
+    refetchOnWindowFocus: true // Refetch when window gains focus
   });
 };
+
