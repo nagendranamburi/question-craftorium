@@ -38,6 +38,7 @@ export type Database = {
           answer: string
           code_example: string | null
           created_at: string
+          description: string
           difficulty: string
           id: string
           image: string | null
@@ -49,6 +50,7 @@ export type Database = {
           answer: string
           code_example?: string | null
           created_at?: string
+          description: string
           difficulty: string
           id?: string
           image?: string | null
@@ -60,6 +62,7 @@ export type Database = {
           answer?: string
           code_example?: string | null
           created_at?: string
+          description?: string
           difficulty?: string
           id?: string
           image?: string | null

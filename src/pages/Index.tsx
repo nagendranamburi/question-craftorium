@@ -41,7 +41,7 @@ const Index = () => {
       return data.map(q => ({
         id: q.id,
         title: q.title,
-        description: q.title, // Note: We should use a proper description field in the database
+        description: q.description || q.title, // Fallback to title if description is not set
         answer: q.answer,
         category: q.tags?.[0] || 'General', // Using first tag as category, fallback to 'General'
         difficulty: q.difficulty as 'Easy' | 'Medium' | 'Hard'
