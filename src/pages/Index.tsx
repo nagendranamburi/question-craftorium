@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Search } from 'lucide-react';
 import QuestionCard from '../components/QuestionCard';
@@ -28,12 +29,15 @@ const Index = () => {
       
       if (categoriesError) throw categoriesError;
 
-      // Then get question counts using a count aggregate
+      // Then get question counts for each category
       const { data: counts, error: countsError } = await supabase
         .from('questions')
-        .select('category_id, count', { count: 'exact', head: false })
         .select('category_id')
-        .count();
+        .select(`
+          category_id,
+          count
+        `)
+        .count('category_id');
 
       if (countsError) throw countsError;
 
