@@ -2,9 +2,9 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
 import { FormData } from '@/types/question';
-import FormattingToolbar from './question-form/FormattingToolbar';
 import CategorySelector from './question-form/CategorySelector';
 import FormField from './question-form/FormField';
+import MonacoEditor from './question-form/MonacoEditor';
 
 interface QuestionFormProps {
   initialData?: FormData;
@@ -33,39 +33,6 @@ const QuestionForm = ({ initialData, categories, onSubmit, onClose }: QuestionFo
       setFormData({ ...formData, category: newCategory });
       setNewCategory('');
     }
-  };
-
-  const insertText = (tag: string) => {
-    const textArea = document.getElementById('answer-textarea') as HTMLTextAreaElement;
-    if (!textArea) return;
-
-    const start = textArea.selectionStart;
-    const end = textArea.selectionEnd;
-    const text = textArea.value;
-    let insertion = '';
-
-    switch(tag) {
-      case 'code':
-        insertion = '\n```\n// your code here\n```\n';
-        break;
-      case 'bold':
-        insertion = '**selected text**';
-        break;
-      case 'italic':
-        insertion = '_selected text_';
-        break;
-      default:
-        return;
-    }
-
-    const newText = text.substring(0, start) + insertion + text.substring(end);
-    setFormData({ ...formData, answer: newText });
-
-    setTimeout(() => {
-      textArea.focus();
-      const newCursorPos = start + insertion.length;
-      textArea.setSelectionRange(newCursorPos, newCursorPos);
-    }, 0);
   };
 
   return (
@@ -103,19 +70,10 @@ const QuestionForm = ({ initialData, categories, onSubmit, onClose }: QuestionFo
           />
         </FormField>
 
-        <FormField label="Answer">
-          <FormattingToolbar onInsertText={insertText} />
-          <textarea
-            id="answer-textarea"
+        <FormField label="Answer" className="prose max-w-none">
+          <MonacoEditor
             value={formData.answer}
-            onChange={(e) => setFormData({ ...formData, answer: e.target.value })}
-            className="w-full px-3 py-2 border border-neutral-light rounded-lg font-mono bg-neutral-darker text-white"
-            rows={6}
-            placeholder="Write your answer here. Use formatting buttons above or manually:
-- ```code``` for code blocks
-- **text** for bold
-- _text_ for italic"
-            required
+            onChange={(value) => setFormData({ ...formData, answer: value })}
           />
         </FormField>
 
