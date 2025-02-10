@@ -6,6 +6,7 @@ export interface Question {
   answer: string;
   category: string;
   difficulty: 'Easy' | 'Medium' | 'Hard';
+  code_example?: string;
 }
 
 export type FormData = Omit<Question, 'id'>;

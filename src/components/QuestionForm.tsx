@@ -7,19 +7,20 @@ import FormField from './question-form/FormField';
 import RichTextEditor from './question-form/RichTextEditor';
 
 interface QuestionFormProps {
-  initialData?: FormData;
+  initialData?: FormData & { code_example?: string };
   categories: string[];
-  onSubmit: (data: FormData) => void;
+  onSubmit: (data: FormData & { code_example?: string }) => void;
   onClose: () => void;
 }
 
 const QuestionForm = ({ initialData, categories, onSubmit, onClose }: QuestionFormProps) => {
-  const [formData, setFormData] = useState<FormData>(initialData || {
+  const [formData, setFormData] = useState<FormData & { code_example?: string }>(initialData || {
     title: '',
     description: '',
     answer: '',
     category: '',
-    difficulty: 'Easy'
+    difficulty: 'Easy',
+    code_example: ''
   });
   const [newCategory, setNewCategory] = useState('');
 
@@ -104,6 +105,16 @@ const QuestionForm = ({ initialData, categories, onSubmit, onClose }: QuestionFo
             </FormField>
           </div>
         </div>
+
+        <FormField label="Code Example">
+          <textarea
+            value={formData.code_example || ''}
+            onChange={(e) => setFormData({ ...formData, code_example: e.target.value })}
+            className="w-full px-3 py-2 border border-neutral-light rounded-lg font-mono"
+            rows={6}
+            placeholder="Add code example here (optional)"
+          />
+        </FormField>
 
         <div className="grid grid-cols-2 gap-4">
           <FormField label="Category">
