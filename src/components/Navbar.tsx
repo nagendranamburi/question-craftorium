@@ -10,12 +10,12 @@ const Navbar = () => {
     <nav className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md z-50 border-b border-neutral-light">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <div className="flex-shrink-0">
-            <Link to="/" className="flex flex-col items-start">
+          <div className="flex-1 flex justify-center">
+            <Link to="/" className="flex flex-col items-center">
               <span className="font-display text-xl font-bold bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">
                 Master Your Web Development Interview
               </span>
-              <span className="text-xs text-neutral-dark font-medium self-end">-Preparation Guide-</span>
+              <span className="text-xs text-neutral-dark font-medium">-Preparation Guide-</span>
             </Link>
           </div>
 
