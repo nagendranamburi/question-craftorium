@@ -5,71 +5,31 @@ import QuestionCard from '../components/QuestionCard';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
-const categories = [
-  {
-    name: 'JavaScript',
-    count: 2,
-    icon: '🟨',
-    color: 'bg-yellow-100',
-    textColor: 'text-yellow-800',
-    borderColor: 'border-yellow-200'
-  },
-  {
-    name: 'TypeScript',
-    count: 1,
-    icon: '🔷',
-    color: 'bg-blue-100',
-    textColor: 'text-blue-800',
-    borderColor: 'border-blue-200'
-  },
-  {
-    name: 'React',
-    count: 4,
-    icon: '⚛️',
-    color: 'bg-cyan-100',
-    textColor: 'text-cyan-800',
-    borderColor: 'border-cyan-200'
-  },
-  {
-    name: 'Redux',
-    count: 1,
-    icon: '🔄',
-    color: 'bg-purple-100',
-    textColor: 'text-purple-800',
-    borderColor: 'border-purple-200'
-  },
-  {
-    name: 'Next.js',
-    count: 1,
-    icon: '▲',
-    color: 'bg-neutral-100',
-    textColor: 'text-neutral-800',
-    borderColor: 'border-neutral-200'
-  },
-  {
-    name: 'HTML',
-    count: 1,
-    icon: '🌐',
-    color: 'bg-orange-100',
-    textColor: 'text-orange-800',
-    borderColor: 'border-orange-200'
-  },
-  {
-    name: 'CSS',
-    count: 1,
-    icon: '🎨',
-    color: 'bg-pink-100',
-    textColor: 'text-pink-800',
-    borderColor: 'border-pink-200'
-  }
-];
+interface Category {
+  id: string;
+  name: string;
+  logo_url: string;
+}
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
+  // Fetch categories from Supabase
+  const { data: categories = [], isLoading: isCategoriesLoading } = useQuery({
+    queryKey: ['categories'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('*');
+      
+      if (error) throw error;
+      return data as Category[];
+    }
+  });
+
   // Fetch questions from Supabase
-  const { data: questions, isLoading } = useQuery({
+  const { data: questions, isLoading: isQuestionsLoading } = useQuery({
     queryKey: ['questions'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -95,6 +55,28 @@ const Index = () => {
     const matchesCategory = selectedCategory ? question.category === selectedCategory : true;
     return matchesSearch && matchesCategory;
   }) || [];
+
+  // Helper function to get category color based on name
+  const getCategoryStyles = (name: string) => {
+    switch (name) {
+      case 'JavaScript':
+        return { color: 'bg-yellow-100', textColor: 'text-yellow-800', borderColor: 'border-yellow-200' };
+      case 'TypeScript':
+        return { color: 'bg-blue-100', textColor: 'text-blue-800', borderColor: 'border-blue-200' };
+      case 'React':
+        return { color: 'bg-cyan-100', textColor: 'text-cyan-800', borderColor: 'border-cyan-200' };
+      case 'Redux':
+        return { color: 'bg-purple-100', textColor: 'text-purple-800', borderColor: 'border-purple-200' };
+      case 'Next.js':
+        return { color: 'bg-neutral-100', textColor: 'text-neutral-800', borderColor: 'border-neutral-200' };
+      case 'HTML':
+        return { color: 'bg-orange-100', textColor: 'text-orange-800', borderColor: 'border-orange-200' };
+      case 'CSS':
+        return { color: 'bg-pink-100', textColor: 'text-pink-800', borderColor: 'border-pink-200' };
+      default:
+        return { color: 'bg-gray-100', textColor: 'text-gray-800', borderColor: 'border-gray-200' };
+    }
+  };
 
   return (
     <div className="min-h-screen bg-neutral-light/30">
@@ -126,19 +108,35 @@ const Index = () => {
 
           {/* Category Tiles */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-12">
-            {categories.map((category) => (
-              <button
-                key={category.name}
-                onClick={() => setSelectedCategory(selectedCategory === category.name ? null : category.name)}
-                className={`${category.color} ${category.textColor} ${category.borderColor} border rounded-xl p-6 transition-all duration-200 hover:scale-105 ${
-                  selectedCategory === category.name ? 'ring-2 ring-primary' : ''
-                }`}
-              >
-                <div className="text-3xl mb-2">{category.icon}</div>
-                <h3 className="font-semibold mb-1">{category.name}</h3>
-                <p className="text-sm opacity-75">{category.count} questions</p>
-              </button>
-            ))}
+            {isCategoriesLoading ? (
+              // Loading skeleton for categories
+              Array.from({ length: 7 }).map((_, index) => (
+                <div key={index} className="animate-pulse bg-gray-200 rounded-xl p-6 h-32"></div>
+              ))
+            ) : (
+              categories.map((category) => {
+                const styles = getCategoryStyles(category.name);
+                const questionCount = questions?.filter(q => q.category === category.name).length || 0;
+                
+                return (
+                  <button
+                    key={category.id}
+                    onClick={() => setSelectedCategory(selectedCategory === category.name ? null : category.name)}
+                    className={`${styles.color} ${styles.textColor} ${styles.borderColor} border rounded-xl p-6 transition-all duration-200 hover:scale-105 ${
+                      selectedCategory === category.name ? 'ring-2 ring-primary' : ''
+                    }`}
+                  >
+                    <img 
+                      src={category.logo_url} 
+                      alt={`${category.name} logo`} 
+                      className="w-12 h-12 mb-2 mx-auto"
+                    />
+                    <h3 className="font-semibold mb-1">{category.name}</h3>
+                    <p className="text-sm opacity-75">{questionCount} questions</p>
+                  </button>
+                )
+              })
+            )}
           </div>
 
           {/* Selected Category Title */}
@@ -157,7 +155,7 @@ const Index = () => {
           )}
 
           {/* Loading State */}
-          {isLoading && (
+          {isQuestionsLoading && (
             <div className="text-center py-8">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
               <p className="mt-4 text-neutral-dark">Loading questions...</p>
@@ -165,7 +163,7 @@ const Index = () => {
           )}
 
           {/* Questions List */}
-          {!isLoading && (
+          {!isQuestionsLoading && (
             <div className="space-y-6">
               {filteredQuestions.map((question) => (
                 <QuestionCard key={question.id} question={question} />
