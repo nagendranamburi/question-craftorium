@@ -41,20 +41,6 @@ const Navbar = () => {
             >
               Home
             </Link>
-            <Link
-              to="/questions"
-              className="block px-3 py-2 rounded-md text-neutral-dark hover:text-primary transition-colors font-semibold"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Questions
-            </Link>
-            <Link
-              to="/admin"
-              className="block px-3 py-2 rounded-md text-neutral-dark hover:text-primary transition-colors font-semibold"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Admin
-            </Link>
           </div>
         </div>
       )}
