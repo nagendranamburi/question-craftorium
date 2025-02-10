@@ -15,7 +15,7 @@ const Navbar = () => {
               <span className="font-display text-2xl font-bold bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">
                 React<span className="text-neutral-darker">Prep</span>
               </span>
-              <span className="text-xs text-neutral-dark font-medium">Master Your React Interview</span>
+              <span className="text-xs text-neutral-dark font-medium">Preparation Guide</span>
             </Link>
           </div>
           
@@ -75,4 +75,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
