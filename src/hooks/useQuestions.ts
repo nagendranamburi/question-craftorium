@@ -30,9 +30,8 @@ export const useQuestions = (selectedCategory: string | null) => {
       }));
     },
     staleTime: 0, // Make the data stale immediately
-    cacheTime: 0, // Don't cache the data
+    gcTime: 0, // Don't cache the data (formerly cacheTime)
     refetchOnMount: true, // Refetch when component mounts
     refetchOnWindowFocus: true // Refetch when window gains focus
   });
 };
-
