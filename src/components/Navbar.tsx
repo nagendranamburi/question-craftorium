@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, Search } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -11,10 +11,12 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex-shrink-0">
-            <Link to="/" className="flex items-center">
-              <span className="font-display text-2xl font-bold bg-clip-text text-transparent bg-[linear-gradient(to_right,#9b87f5,#7E69AB)]">
-                ReactPrep
-              </span>
+            <Link to="/" className="flex items-center gap-2">
+              <img 
+                src="/lovable-uploads/6622cfce-5249-418b-8f9d-557d3b82ec2c.png" 
+                alt="ReactPrep Logo" 
+                className="h-10"
+              />
             </Link>
           </div>
           
