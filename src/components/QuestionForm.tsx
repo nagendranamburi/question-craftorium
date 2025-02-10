@@ -114,7 +114,7 @@ const QuestionForm = ({ initialData, categories, onSubmit, onClose }: QuestionFo
             <button
               type="button"
               onClick={() => insertText('code')}
-              className="inline-flex items-center px-3 py-1.5 rounded bg-neutral-light/50 text-neutral-darker hover:bg-neutral-light"
+              className="inline-flex items-center px-3 py-1.5 rounded bg-neutral-dark text-white hover:bg-neutral-darker transition-colors"
               title="Insert code block"
             >
               <Code2 size={16} className="mr-1" />
@@ -123,7 +123,7 @@ const QuestionForm = ({ initialData, categories, onSubmit, onClose }: QuestionFo
             <button
               type="button"
               onClick={() => insertText('bold')}
-              className="inline-flex items-center px-3 py-1.5 rounded bg-neutral-light/50 text-neutral-darker hover:bg-neutral-light"
+              className="inline-flex items-center px-3 py-1.5 rounded bg-neutral-dark text-white hover:bg-neutral-darker transition-colors"
               title="Make text bold"
             >
               <Bold size={16} className="mr-1" />
@@ -132,7 +132,7 @@ const QuestionForm = ({ initialData, categories, onSubmit, onClose }: QuestionFo
             <button
               type="button"
               onClick={() => insertText('italic')}
-              className="inline-flex items-center px-3 py-1.5 rounded bg-neutral-light/50 text-neutral-darker hover:bg-neutral-light"
+              className="inline-flex items-center px-3 py-1.5 rounded bg-neutral-dark text-white hover:bg-neutral-darker transition-colors"
               title="Make text italic"
             >
               <Italic size={16} className="mr-1" />
@@ -143,7 +143,7 @@ const QuestionForm = ({ initialData, categories, onSubmit, onClose }: QuestionFo
             id="answer-textarea"
             value={formData.answer}
             onChange={(e) => setFormData({ ...formData, answer: e.target.value })}
-            className="w-full px-3 py-2 border border-neutral-light rounded-lg font-mono"
+            className="w-full px-3 py-2 border border-neutral-light rounded-lg font-mono bg-neutral-darker text-white"
             rows={6}
             placeholder="Write your answer here. Use formatting buttons above or manually:
 - ```code``` for code blocks
@@ -220,3 +220,4 @@ const QuestionForm = ({ initialData, categories, onSubmit, onClose }: QuestionFo
 };
 
 export default QuestionForm;
+
