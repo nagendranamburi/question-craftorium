@@ -184,8 +184,8 @@ const Index = () => {
             </div>
           )}
 
-          {/* Questions Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Questions List */}
+          <div className="space-y-6">
             {filteredQuestions.map((question) => (
               <QuestionCard key={question.id} question={question} />
             ))}

@@ -22,6 +22,23 @@ const QuestionCard = ({ question }: QuestionCardProps) => {
     Hard: 'bg-red-100 text-red-800',
   }[question.difficulty];
 
+  // Function to format answer with code blocks
+  const formatAnswer = (text: string) => {
+    const parts = text.split('\n\n');
+    return parts.map((part, index) => {
+      if (part.startsWith('```')) {
+        // Remove the backticks and language identifier if present
+        const code = part.replace(/```(\w+)?/, '').replace(/```$/, '').trim();
+        return (
+          <pre key={index} className="mt-4 p-4 bg-neutral-darker rounded-lg">
+            <code className="text-sm text-white font-mono whitespace-pre-wrap">{code}</code>
+          </pre>
+        );
+      }
+      return <p key={index} className="mt-4">{part}</p>;
+    });
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-sm border border-neutral-light/50 overflow-hidden transition-all duration-300 hover:shadow-md">
       <div className="p-6">
@@ -61,7 +78,7 @@ const QuestionCard = ({ question }: QuestionCardProps) => {
         
         {isExpanded && (
           <div className="mt-4 p-4 bg-neutral-light/30 rounded-lg animate-fadeIn">
-            <p className="text-neutral-dark whitespace-pre-wrap">{question.answer}</p>
+            <div className="text-neutral-dark">{formatAnswer(question.answer)}</div>
           </div>
         )}
       </div>
