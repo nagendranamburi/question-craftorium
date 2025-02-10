@@ -26,23 +26,27 @@ const QuestionCard = ({ question }: QuestionCardProps) => {
   const formatAnswer = (text: string) => {
     if (!text) return [];
     
-    // Split by triple backticks to separate code blocks
-    const parts = text.split(/```([\s\S]*?)```/);
+    // Split by triple backticks
+    const parts = text.split(/(```[\s\S]*?```)/);
     
     return parts.map((part, index) => {
-      if (index % 2 === 1) {
-        // This is a code block (between triple backticks)
-        // Remove the language identifier if present
-        const code = part.replace(/^\w+\n/, '').trim();
+      // Check if this part is a code block
+      if (part.startsWith('```')) {
+        // Extract language and code
+        const match = part.match(/```(\w+)?\n([\s\S]*?)```/);
+        if (!match) return null;
+        
+        const [, language, code] = match;
         return (
-          <pre key={index} className="my-4 p-4 bg-neutral-darker rounded-lg overflow-x-auto">
-            <code className="text-sm text-white font-mono whitespace-pre">{code}</code>
+          <pre key={index} className="my-4 p-4 bg-gray-900 rounded-lg overflow-x-auto">
+            <code className="text-sm text-white font-mono whitespace-pre">
+              {code.trim()}
+            </code>
           </pre>
         );
       } else {
-        // This is regular text
-        // Split by newlines and create paragraph for each
-        const paragraphs = part.split('\n\n').filter(p => p.trim());
+        // Regular text - split by newlines and create paragraphs
+        const paragraphs = part.split('\n').filter(p => p.trim());
         return paragraphs.map((paragraph, pIndex) => (
           <p key={`${index}-${pIndex}`} className="my-2 text-neutral-dark">
             {paragraph.trim()}
