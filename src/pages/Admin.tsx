@@ -20,7 +20,7 @@ const Admin = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('questions')
-        .select('*');
+        .select('*, categories(name)');
       
       if (error) throw error;
       
@@ -29,17 +29,24 @@ const Admin = () => {
         title: q.title,
         description: q.description,
         answer: q.answer,
-        category: q.tags[0], // Using first tag as category
+        category: q.categories?.name || '',
         difficulty: q.difficulty as 'Easy' | 'Medium' | 'Hard',
         code_example: q.code_example
       }));
     }
   });
 
-  const categories = Array.from(new Set([
-    'React', 'Virtual DOM', 'Props', 'Context', 'Hooks',
-    ...(questions?.map(q => q.category) || [])
-  ]));
+  const { data: categories } = useQuery({
+    queryKey: ['categories'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('*');
+      
+      if (error) throw error;
+      return data;
+    }
+  });
 
   const handleDelete = async (id: string) => {
     try {
@@ -73,6 +80,13 @@ const Admin = () => {
 
   const handleSubmit = async (formData: FormData) => {
     try {
+      // Find category_id based on the category name
+      const categoryId = categories?.find(c => c.name === formData.category)?.id;
+      
+      if (!categoryId) {
+        throw new Error('Invalid category selected');
+      }
+
       if (editingQuestion) {
         // Update existing question
         const { error } = await supabase
@@ -80,6 +94,7 @@ const Admin = () => {
           .update({
             title: formData.title,
             description: formData.description,
+            category_id: categoryId,
             tags: [formData.category],
             answer: formData.answer,
             difficulty: formData.difficulty,
@@ -100,6 +115,7 @@ const Admin = () => {
           .insert({
             title: formData.title,
             description: formData.description,
+            category_id: categoryId,
             tags: [formData.category],
             answer: formData.answer,
             difficulty: formData.difficulty,
@@ -155,7 +171,7 @@ const Admin = () => {
                 difficulty: editingQuestion.difficulty,
                 code_example: editingQuestion.code_example
               } : undefined}
-              categories={categories}
+              categories={categories?.map(c => c.name) || []}
               onSubmit={handleSubmit}
               onClose={() => {
                 setIsFormOpen(false);

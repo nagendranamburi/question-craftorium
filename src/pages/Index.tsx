@@ -22,17 +22,18 @@ const Index = () => {
   const { data: categories = [], isLoading: isCategoriesLoading } = useQuery({
     queryKey: ['categories'],
     queryFn: async () => {
+      // First get categories
       const { data: categoriesData, error: categoriesError } = await supabase
         .from('categories')
         .select('*');
       
       if (categoriesError) throw categoriesError;
 
-      // Get question counts for each category
-      const { data: countsData, error: countsError } = await supabase
+      // Then get question counts
+      const { data: counts, error: countsError } = await supabase
         .from('questions')
         .select('category_id, count')
-        .select('category_id, count(*)', { count: 'exact' })
+        .select('category_id, count(*)')
         .group_by('category_id');
 
       if (countsError) throw countsError;
@@ -41,7 +42,7 @@ const Index = () => {
       const categoriesWithCounts = categoriesData.map(category => ({
         ...category,
         _count: {
-          questions: countsData.find(c => c.category_id === category.id)?.count || 0
+          questions: counts.find(c => c.category_id === category.id)?.count || 0
         }
       }));
 
@@ -196,11 +197,17 @@ const Index = () => {
           {/* Questions List */}
           {!isQuestionsLoading && (
             <div className="space-y-6">
-              {filteredQuestions.map((question) => (
+              {(questions || []).filter(question => {
+                const matchesSearch = 
+                  question.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                  question.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                  question.answer.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchesSearch;
+              }).map((question) => (
                 <QuestionCard key={question.id} question={question} />
               ))}
               
-              {filteredQuestions.length === 0 && (
+              {!questions?.length && (
                 <div className="text-center py-8">
                   <p className="text-neutral-dark">No questions found matching your criteria.</p>
                 </div>
@@ -211,6 +218,27 @@ const Index = () => {
       </div>
     </div>
   );
+};
+
+const getCategoryStyles = (name: string) => {
+  switch (name) {
+    case 'JavaScript':
+      return { color: 'bg-yellow-100', textColor: 'text-yellow-800', borderColor: 'border-yellow-200' };
+    case 'TypeScript':
+      return { color: 'bg-blue-100', textColor: 'text-blue-800', borderColor: 'border-blue-200' };
+    case 'React':
+      return { color: 'bg-cyan-100', textColor: 'text-cyan-800', borderColor: 'border-cyan-200' };
+    case 'Redux':
+      return { color: 'bg-purple-100', textColor: 'text-purple-800', borderColor: 'border-purple-200' };
+    case 'Next.js':
+      return { color: 'bg-neutral-100', textColor: 'text-neutral-800', borderColor: 'border-neutral-200' };
+    case 'HTML':
+      return { color: 'bg-orange-100', textColor: 'text-orange-800', borderColor: 'border-orange-200' };
+    case 'CSS':
+      return { color: 'bg-pink-100', textColor: 'text-pink-800', borderColor: 'border-pink-200' };
+    default:
+      return { color: 'bg-gray-100', textColor: 'text-gray-800', borderColor: 'border-gray-200' };
+  }
 };
 
 export default Index;
