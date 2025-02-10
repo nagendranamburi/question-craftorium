@@ -13,7 +13,7 @@ const Navbar = () => {
           <div className="flex-1 flex justify-center">
             <Link to="/" className="flex flex-col items-center">
               <span className="font-display text-xl font-bold bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">
-                Master Your Web Development Interview
+                ReactPrep
               </span>
               <span className="text-xs text-neutral-dark font-medium">-Preparation Guide-</span>
             </Link>
