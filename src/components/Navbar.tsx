@@ -12,15 +12,9 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           <div className="flex-shrink-0">
             <Link to="/" className="flex items-center">
-              <img 
-                src="/lovable-uploads/6622cfce-5249-418b-8f9d-557d3b82ec2c.png" 
-                alt="ReactPrep Logo" 
-                className="h-12 w-auto object-contain" 
-                style={{
-                  filter: 'contrast(1.2) brightness(0.9)',
-                  mixBlendMode: 'darken'
-                }}
-              />
+              <span className="font-display text-2xl font-bold bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">
+                React<span className="text-neutral-darker">Prep</span>
+              </span>
             </Link>
           </div>
           
