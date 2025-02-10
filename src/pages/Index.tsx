@@ -9,42 +9,70 @@ interface Category {
   id: string;
   name: string;
   logo_url: string;
+  _count?: {
+    questions: number;
+  };
 }
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  // Fetch categories from Supabase
+  // Fetch categories and question counts from Supabase
   const { data: categories = [], isLoading: isCategoriesLoading } = useQuery({
     queryKey: ['categories'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data: categoriesData, error: categoriesError } = await supabase
         .from('categories')
         .select('*');
       
-      if (error) throw error;
-      return data as Category[];
+      if (categoriesError) throw categoriesError;
+
+      // Get question counts for each category
+      const { data: countsData, error: countsError } = await supabase
+        .from('questions')
+        .select('category_id, count')
+        .select('category_id, count(*)', { count: 'exact' })
+        .group_by('category_id');
+
+      if (countsError) throw countsError;
+
+      // Map counts to categories
+      const categoriesWithCounts = categoriesData.map(category => ({
+        ...category,
+        _count: {
+          questions: countsData.find(c => c.category_id === category.id)?.count || 0
+        }
+      }));
+
+      return categoriesWithCounts as Category[];
     }
   });
 
   // Fetch questions from Supabase
   const { data: questions, isLoading: isQuestionsLoading } = useQuery({
-    queryKey: ['questions'],
+    queryKey: ['questions', selectedCategory],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from('questions')
-        .select('*');
+        .select('*, categories(name)')
+        
+      if (selectedCategory) {
+        query = query.eq('category_id', selectedCategory);
+      }
+      
+      const { data, error } = await query;
       
       if (error) throw error;
       
       return data.map(q => ({
         id: q.id,
         title: q.title,
-        description: q.description || q.title, // Fallback to title if description is not set
+        description: q.description || q.title,
         answer: q.answer,
-        category: q.tags?.[0] || 'General', // Using first tag as category, fallback to 'General'
-        difficulty: q.difficulty as 'Easy' | 'Medium' | 'Hard'
+        category: q.categories?.name || 'General',
+        difficulty: q.difficulty as 'Easy' | 'Medium' | 'Hard',
+        code_example: q.code_example
       }));
     }
   });
@@ -53,9 +81,8 @@ const Index = () => {
     const matchesSearch = 
       question.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       question.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      question.answer.toLowerCase().includes(searchQuery.toLowerCase()); // Also search in answers
-    const matchesCategory = selectedCategory ? question.category === selectedCategory : true;
-    return matchesSearch && matchesCategory;
+      question.answer.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesSearch;
   }) || [];
 
   // Helper function to get category color based on name
@@ -118,14 +145,14 @@ const Index = () => {
             ) : (
               categories.map((category) => {
                 const styles = getCategoryStyles(category.name);
-                const questionCount = questions?.filter(q => q.category === category.name).length || 0;
+                const questionCount = category._count?.questions || 0;
                 
                 return (
                   <button
                     key={category.id}
-                    onClick={() => setSelectedCategory(selectedCategory === category.name ? null : category.name)}
+                    onClick={() => setSelectedCategory(selectedCategory === category.id ? null : category.id)}
                     className={`${styles.color} ${styles.textColor} ${styles.borderColor} border rounded-xl p-6 transition-all duration-200 hover:scale-105 ${
-                      selectedCategory === category.name ? 'ring-2 ring-primary' : ''
+                      selectedCategory === category.id ? 'ring-2 ring-primary' : ''
                     }`}
                   >
                     {category.logo_url && (
@@ -147,7 +174,7 @@ const Index = () => {
           {selectedCategory && (
             <div className="text-center mb-8">
               <h2 className="text-2xl font-semibold text-neutral-darker">
-                {selectedCategory} Questions
+                {categories.find(c => c.id === selectedCategory)?.name} Questions
               </h2>
               <button
                 onClick={() => setSelectedCategory(null)}

@@ -36,6 +36,7 @@ export type Database = {
       questions: {
         Row: {
           answer: string
+          category_id: string
           code_example: string | null
           created_at: string
           description: string
@@ -48,6 +49,7 @@ export type Database = {
         }
         Insert: {
           answer: string
+          category_id: string
           code_example?: string | null
           created_at?: string
           description: string
@@ -60,6 +62,7 @@ export type Database = {
         }
         Update: {
           answer?: string
+          category_id?: string
           code_example?: string | null
           created_at?: string
           description?: string
@@ -70,7 +73,15 @@ export type Database = {
           title?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "questions_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
