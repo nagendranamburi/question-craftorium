@@ -7,6 +7,7 @@ import { useCategories } from '../hooks/useCategories';
 import { useQuestions } from '../hooks/useQuestions';
 import { useIsMobile } from '../hooks/use-mobile';
 import { Menu, X } from 'lucide-react';
+import ScrollToTop from '../components/ScrollToTop';
 
 const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -136,6 +137,7 @@ const Index = () => {
           </div>
         </div>
       </div>
+      <ScrollToTop />
     </div>
   );
 };
