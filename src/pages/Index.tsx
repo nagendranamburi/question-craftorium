@@ -26,7 +26,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-neutral-light/30">
-      <div className="pt-24 pb-16">
+      <div className="pt-20 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Hero searchQuery={searchQuery} setSearchQuery={(query) => {
             const params = new URLSearchParams(window.location.search);
@@ -38,10 +38,10 @@ const Index = () => {
             window.history.replaceState({}, '', `${window.location.pathname}?${params}`);
           }} />
           
-          <div className="flex flex-col md:flex-row gap-8">
+          <div className="flex flex-col md:flex-row gap-6">
             {/* Left Sidebar - Categories */}
             <div className="md:w-1/3 lg:w-1/4">
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {isCategoriesLoading ? (
                   <div className="space-y-4">
                     {Array.from({ length: 7 }).map((_, index) => (
@@ -81,7 +81,7 @@ const Index = () => {
             {/* Right Content - Questions */}
             <div className="md:w-2/3 lg:w-3/4">
               {selectedCategory && (
-                <h2 className="text-2xl font-semibold text-neutral-darker mb-6">
+                <h2 className="text-2xl font-semibold text-neutral-darker mb-4">
                   {categories.find(c => c.id === selectedCategory)?.name} Questions
                 </h2>
               )}
@@ -92,7 +92,7 @@ const Index = () => {
                   <p className="mt-4 text-neutral-dark">Loading questions...</p>
                 </div>
               ) : (
-                <div className="space-y-6">
+                <div className="space-y-4">
                   {filteredQuestions.map((question) => (
                     <QuestionCard key={question.id} question={question} />
                   ))}
