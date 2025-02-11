@@ -1,7 +1,8 @@
-
 import { useState } from 'react';
+import { Navigate } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from '@/contexts/AuthContext';
 import QuestionForm from '@/components/QuestionForm';
 import QuestionsTable from '@/components/QuestionsTable';
 import CSVUploader from '@/components/CSVUploader';
@@ -10,12 +11,39 @@ import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 const Admin = () => {
+  const { session, isAdmin, loading } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
 
-  // Fetch questions from Supabase
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-neutral-light/30 pt-24 pb-16 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (!session) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen bg-neutral-light/30 pt-24 pb-16">
+        <div className="max-w-2xl mx-auto px-4 text-center">
+          <h1 className="text-2xl font-display font-bold text-neutral-darker mb-4">
+            Unauthorized Access
+          </h1>
+          <p className="text-neutral-dark">
+            You do not have permission to access this page. Please contact an administrator if you believe this is an error.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   const { data: questions, isLoading } = useQuery({
     queryKey: ['admin-questions'],
     queryFn: async () => {
@@ -58,7 +86,6 @@ const Admin = () => {
 
       if (error) throw error;
 
-      // Invalidate and refetch questions
       queryClient.invalidateQueries({ queryKey: ['admin-questions'] });
 
       toast({
@@ -81,7 +108,6 @@ const Admin = () => {
 
   const handleSubmit = async (formData: FormData) => {
     try {
-      // Find category_id based on the category name
       const categoryId = categories?.find(c => c.name === formData.category)?.id;
       
       if (!categoryId) {
@@ -89,7 +115,6 @@ const Admin = () => {
       }
 
       if (editingQuestion) {
-        // Update existing question
         const { error } = await supabase
           .from('questions')
           .update({
@@ -110,7 +135,6 @@ const Admin = () => {
           description: "The question has been successfully updated.",
         });
       } else {
-        // Add new question
         const { error } = await supabase
           .from('questions')
           .insert({
@@ -131,7 +155,6 @@ const Admin = () => {
         });
       }
 
-      // Invalidate and refetch questions
       queryClient.invalidateQueries({ queryKey: ['admin-questions'] });
       
       setEditingQuestion(null);
