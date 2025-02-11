@@ -4,6 +4,7 @@ import { Plus } from 'lucide-react';
 import { useToast } from "@/components/ui/use-toast";
 import QuestionForm from '@/components/QuestionForm';
 import QuestionsTable from '@/components/QuestionsTable';
+import CSVUploader from '@/components/CSVUploader';
 import { Question, FormData } from '@/types/question';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -152,13 +153,16 @@ const Admin = () => {
             <h1 className="text-2xl font-display font-bold text-neutral-darker">
               Question Management
             </h1>
-            <button 
-              onClick={() => setIsFormOpen(true)}
-              className="inline-flex items-center px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors"
-            >
-              <Plus size={20} className="mr-2" />
-              Add Question
-            </button>
+            <div className="flex items-center gap-4">
+              <CSVUploader />
+              <button 
+                onClick={() => setIsFormOpen(true)}
+                className="inline-flex items-center px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors"
+              >
+                <Plus size={20} className="mr-2" />
+                Add Question
+              </button>
+            </div>
           </div>
 
           {isFormOpen && (
